@@ -10,6 +10,6 @@ func InitRouter() {
 	router := gin.Default()
 
 	router.GET("/trees", d.GetTrees)
-	router.GET("/helathz", d.GetHealth)
+	router.GET("/healthz", d.GetHealth)
 	router.Run(":8080")
 }
