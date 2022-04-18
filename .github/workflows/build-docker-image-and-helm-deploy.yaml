@@ -56,7 +56,7 @@ jobs:
       uses: 'glopezep/helm@v1.7.1'
       with:
         helm: helm3
-        release: 'trees-webservice-${{ env.RELEASE_VERSION }}'
+        release: 'trees-webservice'
         namespace: 'trees'
         chart: 'charts/trees-webservice'
         token: '${{ secrets.K8S_QS_TOKEN }}'
