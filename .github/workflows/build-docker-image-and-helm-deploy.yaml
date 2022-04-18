@@ -4,7 +4,7 @@ name: CI Build and Publish Docker artifact
 on:
   # run it on push to the default repository branch
   push:
-    branches: [main,workflows]
+    #branches: [main,workflows]
     tags:
       - 'v*.*.*'
 
