@@ -1,0 +1,92 @@
+name: "Deploy-GKE on Google Cloud"
+on:
+  workflow_dispatch:
+    inputs:
+      project_id:
+        description: "Enter project_id"
+        required: true
+      region:
+        description: "Enter GCP Region"
+        required: true
+      zone:
+        description: "Enter GCP zone"
+        required: true
+        
+  workflow_call:
+    inputs:
+      cluster_name:
+        type: string
+        required: true
+      region:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      K8S_QS_TOKEN:
+        required: true
+
+
+jobs:
+
+        
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get directory
+        run: pwd
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+     
+      - name: Set Terraform Variables
+        run: |
+          export TF_VAR_project_id=${{github.event.inputs.project_id}}
+          export TF_VAR_region=${{github.event.inputs.region}}
+          export TF_VAR_zone=${{github.event.inputs.zone}}
+          echo "project_id = \"${TF_VAR_project_id}\"" >> dev.tfvars
+          echo "region = \"${TF_VAR_region}\"" >> dev.tfvars
+          echo "zone = \"${TF_VAR_zone}\"" >> dev.tfvars
+          cat dev.tfvars
+
+      - name: Terraform Init
+        id: init
+        run: terraform init 
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color 
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -var-file="dev.tfvars"
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+      
+      - name: Terraform Apply
+        if: |
+          github.ref == 'refs/heads/main'
+          && github.actor == 'basigabri'
+        run: terraform apply -auto-approve -var-file="dev.tfvars"
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
