@@ -4,7 +4,7 @@ name: CI Build and Publish Docker artifact
 on:
   # run it on push to the default repository branch
   push:
-    branches: [main,workflows]
+    #branches: [main,workflows]
     tags:
       - 'v*.*.*'
 
@@ -23,8 +23,10 @@ jobs:
 
     - name: Build trees-webservice go Docker image
       run: |
-        docker build . --tag ghcr.io/basigabri/tree-webservice:${GITHUB_REF#refs/*/}
-        docker push ghcr.io/basigabri/tree-webservice:${GITHUB_REF#refs/*/}
+        docker build . --tag ghcr.io/basigabri/trees-webservice:${GITHUB_REF#refs/*/}
+        docker push ghcr.io/basigabri/trees-webservice:${GITHUB_REF#refs/*/}
+        docker build . --tag ghcr.io/basigabri/trees-webservice:latest
+        docker push ghcr.io/basigabri/trees-webservice:latest
     
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
