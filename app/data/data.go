@@ -29,3 +29,28 @@ func GetHealth(c *gin.Context) {
 	//Print Result in case of 200 status
 	c.JSON(http.StatusOK, gin.H{"status": "UP"})
 }
+
+func GetTreesById(c *gin.Context) {
+	id := c.Param("id")
+	for _, b := range trees {
+		if b.ID == id {
+			c.IndentedJSON(http.StatusOK, b)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "tree not found"})
+}
+
+func PostTrees(c *gin.Context) {
+	var newTree tree
+
+	// Call BindJSON to bind the received JSON to
+	// newTree.
+	if err := c.BindJSON(&newTree); err != nil {
+		return
+	}
+
+	// Add the new tree to the slice.
+	trees = append(trees, newTree)
+	c.IndentedJSON(http.StatusCreated, newTree)
+}
