@@ -23,8 +23,8 @@ jobs:
 
     - name: Build trees-webservice go Docker image
       run: |
-        docker build . --tag ghcr.io/basigabri/tree-webservice:${GITHUB_REF#refs/*/}
-        docker push ghcr.io/basigabri/tree-webservice:${GITHUB_REF#refs/*/}
+        docker build . --tag ghcr.io/basigabri/trees-webservice:${GITHUB_REF#refs/*/}
+        docker push ghcr.io/basigabri/trees-webservice:${GITHUB_REF#refs/*/}
     
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
