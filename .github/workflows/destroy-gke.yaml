@@ -12,22 +12,6 @@ on:
         description: "Enter GCP zone"
         required: true
         
-  workflow_call:
-    inputs:
-      cluster_name:
-        type: string
-        required: true
-      region:
-        type: string
-        required: true
-    secrets:
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      K8S_QS_TOKEN:
-        required: true
-
 
 jobs:
 

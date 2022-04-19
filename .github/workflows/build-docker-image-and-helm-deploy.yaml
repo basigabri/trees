@@ -53,13 +53,13 @@ jobs:
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: 'Deploy'
-      uses: 'glopezep/helm@v1.7.1'
+      uses: 'basigabri/helm-github-actions@v1.9.0'
       with:
         helm: helm3
         release: 'trees-webservice'
         namespace: 'trees'
         chart: 'charts/trees-webservice'
-        token: '${{ secrets.K8S_QS_TOKEN }}'
+        token: '${{ secrets.GITHUB_TOKEN }}'
         value-files: 'charts/trees-webservice/values.yaml'
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
